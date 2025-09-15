@@ -25,6 +25,9 @@ dependencies:
   logger: ^2.6.1
   flutter_secure_storage: ^9.0.0
   image_picker: ^1.2.0
+  awesome_dialog: ^3.2.1
+  liquid_wave_animate_button: ^1.0.5
+  get: ^4.7.2
 
 dev_dependencies:
   flutter_test:
