@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             title: "SUCCESS",
             desc: "Login successful",
           );
-          await Future.delayed(Duration(milliseconds: 3000));
+          await Future.delayed(Duration(milliseconds: 1000));
           Get.toNamed(Routes.home);
         } else if (state is AuthLoginFailure) {
           setState(() => isLoading = false);

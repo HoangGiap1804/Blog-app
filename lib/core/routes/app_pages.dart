@@ -5,7 +5,7 @@ import 'package:share_blog/features/auth/presentation/pages/signup_page.dart';
 import 'package:share_blog/features/blog/presentation/pages/home_page.dart';
 
 class AppPages {
-  static const inital = Routes.login;
+  static const inital = Routes.home;
 
   static final routes = [
     GetPage(
