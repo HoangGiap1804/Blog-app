@@ -32,6 +32,9 @@ dependencies:
   markdown_widget: ^2.3.2+8
   flutter_markdown: ^0.7.7+1
   flutter_speed_dial: ^7.0.0
+  read_more_text: ^0.0.5
+  horizontal_card_pager: ^1.1.1
+  vertical_card_pager: ^1.6.3
 
 dev_dependencies:
   flutter_test:

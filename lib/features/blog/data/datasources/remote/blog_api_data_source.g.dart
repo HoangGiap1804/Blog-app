@@ -24,7 +24,7 @@ class _BlogApiDataSource implements BlogApiDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BlogModel> createBlog(
+  Future<BlogResponse> createBlog(
     String title,
     String content,
     String status,
@@ -55,7 +55,7 @@ class _BlogApiDataSource implements BlogApiDataSource {
         filename: bannerImage.path.split(Platform.pathSeparator).last,
       ),
     ));
-    final _options = _setStreamType<BlogModel>(Options(
+    final _options = _setStreamType<BlogResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -73,9 +73,84 @@ class _BlogApiDataSource implements BlogApiDataSource {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BlogModel _value;
+    late BlogResponse _value;
     try {
-      _value = BlogModel.fromJson(_result.data!);
+      _value = BlogResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BlogResponse> getBlogBySlug(
+    String slug,
+    String accessToken,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': accessToken};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BlogResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/blogs/slug/${slug}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BlogResponse _value;
+    try {
+      _value = BlogResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ListBlogResponse> getListBlog(
+    int limit,
+    int offset,
+    String accessToken,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': accessToken};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ListBlogResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/blogs/',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ListBlogResponse _value;
+    try {
+      _value = ListBlogResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

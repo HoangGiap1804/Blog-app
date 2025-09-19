@@ -12,4 +12,15 @@ abstract interface class BlogRepository {
     required String accessToken,
     required File bannerImage,
   });
+
+  Future<Either<Failure, BlogEntity>> getBlogBySlug({
+    required String slug,
+    required String accessToken,
+  });
+
+  Future<Either<Failure, List<BlogEntity>>> getListBlog({
+    required int limit,
+    required int offset,
+    required String accessToken,
+  });
 }

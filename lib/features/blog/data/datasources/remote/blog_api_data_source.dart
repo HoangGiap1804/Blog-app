@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:share_blog/features/blog/data/datasources/blog_data_source.dart';
-import 'package:share_blog/features/blog/data/models/blog_model.dart';
+import 'package:share_blog/features/blog/data/models/blog_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:share_blog/features/blog/data/models/list_blog_response.dart';
 
 part 'blog_api_data_source.g.dart';
 
@@ -17,11 +18,26 @@ abstract class BlogApiDataSource implements BlogDataSource {
   @override
   @POST("/blogs")
   @MultiPart()
-  Future<BlogModel> createBlog(
+  Future<BlogResponse> createBlog(
     @Part(name: "title") String title,
     @Part(name: "content") String content,
     @Part(name: "status") String status,
     @Part(name: "banner_image") File bannerImage,
+    @Header("Authorization") String accessToken,
+  );
+
+  @override
+  @GET("/blogs/slug/{slug}")
+  Future<BlogResponse> getBlogBySlug(
+    @Path("slug") String slug,
+    @Header("Authorization") String accessToken,
+  );
+
+  @override
+  @GET("/blogs/")
+  Future<ListBlogResponse> getListBlog(
+    @pragma("limit") int limit,
+    @pragma("offset") int offset,
     @Header("Authorization") String accessToken,
   );
 }

@@ -1,19 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:share_blog/core/routes/app_pages.dart';
 import 'package:share_blog/core/themes/theme.dart';
 import 'package:share_blog/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:share_blog/features/auth/presentation/pages/login_page.dart';
+import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:share_blog/injection_container.dart';
 
 void main() {
-  initializeDependencies();
-  runApp(
-    MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => serviceLocator<AuthBloc>())],
-      child: const MyApp(),
-    ),
+  runZonedGuarded(
+    () {
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.dumpErrorToConsole(details);
+      };
+      initializeDependencies();
+      runApp(
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+            BlocProvider(create: (_) => serviceLocator<BlogBloc>()),
+          ],
+          child: const MyApp(),
+        ),
+      );
+    },
+    (error, stackTrace) {
+      print("Caught by runZonedGuarded: $error");
+      // Gửi log lên server nếu cần
+    },
   );
 }
 

@@ -9,6 +9,14 @@ import 'package:share_blog/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:share_blog/features/auth/domain/usecases/refresh_token_usecase.dart';
 import 'package:share_blog/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:share_blog/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:share_blog/features/blog/data/datasources/blog_data_source.dart';
+import 'package:share_blog/features/blog/data/datasources/remote/blog_api_data_source.dart';
+import 'package:share_blog/features/blog/data/repositories/blog_repository_impl.dart';
+import 'package:share_blog/features/blog/domain/repositories/blog_repository.dart';
+import 'package:share_blog/features/blog/domain/usecases/create_blog_usecase.dart';
+import 'package:share_blog/features/blog/domain/usecases/get_blog_by_slug_usecase.dart';
+import 'package:share_blog/features/blog/domain/usecases/get_list_blog_usecase.dart';
+import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
 
 final serviceLocator = GetIt.instance;
 Future<void> initializeDependencies() async {
@@ -44,6 +52,30 @@ Future<void> initializeDependencies() async {
       loginUsecase: serviceLocator(),
       refreshTokenUsecase: serviceLocator(),
       logoutUsecase: serviceLocator(),
+    ),
+  );
+
+  // Blog
+  serviceLocator.registerFactory<BlogDataSource>(
+    () => BlogApiDataSource(serviceLocator()),
+  );
+  serviceLocator.registerFactory<BlogRepository>(
+    () => BlogRepositoryImpl(blogDataSource: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => CreateBlogUsecase(blogRepository: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => GetBlogBySlugUsecase(blogRepository: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => GetListBlogUsecase(blogRepository: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => BlogBloc(
+      createBlogUsecase: serviceLocator(),
+      getBlogBySlugUsecase: serviceLocator(),
+      getListBlogUsecase: serviceLocator(),
     ),
   );
 }
