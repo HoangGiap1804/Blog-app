@@ -7,6 +7,7 @@ import 'package:share_blog/core/routes/app_pages.dart';
 import 'package:share_blog/core/themes/theme.dart';
 import 'package:share_blog/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
+import 'package:share_blog/features/user/presentation/bloc/user_bloc.dart';
 import 'package:share_blog/injection_container.dart';
 
 void main() {
@@ -21,6 +22,7 @@ void main() {
           providers: [
             BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
             BlocProvider(create: (_) => serviceLocator<BlogBloc>()),
+            BlocProvider(create: (_) => serviceLocator<UserBloc>()),
           ],
           child: const MyApp(),
         ),

@@ -2,9 +2,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:share_blog/core/themes/app_pallete.dart';
 import 'package:share_blog/features/blog/presentation/pages/create_blog_page.dart';
-import 'package:share_blog/features/blog/presentation/pages/get_blog_by_slug.dart';
 import 'package:share_blog/features/blog/presentation/pages/get_list_blog_page.dart';
-import 'package:share_blog/features/blog/presentation/pages/profile_page.dart';
+import 'package:share_blog/features/user/presentation/pages/user_profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -34,7 +33,7 @@ class _HomePageState extends State<HomePage> {
       GetListBlogPage(),
       CreateBlogPage(),
       Center(child: Text("Home Page", style: TextStyle(fontSize: 25))),
-      ProfilePage(),
+      UserProfilePage(),
       Center(child: Text("Search Page", style: TextStyle(fontSize: 25))),
     ];
     _pageController = PageController(initialPage: currentIndex);

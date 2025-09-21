@@ -108,7 +108,7 @@ Code block:
         Align(
           alignment: Alignment.center,
           child: _image == null
-              ? Text("Select image")
+              ? Text("Select image", style: TextStyle(fontSize: 30))
               : Image.file(
                   _image!,
                   fit: BoxFit.cover, // ảnh phủ kín

@@ -17,6 +17,12 @@ import 'package:share_blog/features/blog/domain/usecases/create_blog_usecase.dar
 import 'package:share_blog/features/blog/domain/usecases/get_blog_by_slug_usecase.dart';
 import 'package:share_blog/features/blog/domain/usecases/get_list_blog_usecase.dart';
 import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
+import 'package:share_blog/features/user/data/data_sources/remote/user_api_data_source.dart';
+import 'package:share_blog/features/user/data/data_sources/user_data_source.dart';
+import 'package:share_blog/features/user/data/repositories/user_repository_impl.dart';
+import 'package:share_blog/features/user/domain/repositories/user_repository.dart';
+import 'package:share_blog/features/user/domain/usecases/get_current_user_usecase.dart';
+import 'package:share_blog/features/user/presentation/bloc/user_bloc.dart';
 
 final serviceLocator = GetIt.instance;
 Future<void> initializeDependencies() async {
@@ -77,5 +83,19 @@ Future<void> initializeDependencies() async {
       getBlogBySlugUsecase: serviceLocator(),
       getListBlogUsecase: serviceLocator(),
     ),
+  );
+
+  // User
+  serviceLocator.registerFactory<UserDataSource>(
+    () => UserApiDataSource(serviceLocator()),
+  );
+  serviceLocator.registerFactory<UserRepository>(
+    () => UserRepositoryImpl(userDataSource: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => GetCurrentUserUsecase(userRepository: serviceLocator()),
+  );
+  serviceLocator.registerLazySingleton(
+    () => UserBloc(getCurrentUserUsecase: serviceLocator()),
   );
 }
