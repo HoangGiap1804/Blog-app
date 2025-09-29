@@ -36,8 +36,8 @@ abstract class BlogApiDataSource implements BlogDataSource {
   @override
   @GET("/blogs/")
   Future<ListBlogResponse> getListBlog(
-    @pragma("limit") int limit,
-    @pragma("offset") int offset,
+    @Query("limit") int limit,
+    @Query("offset") int offset,
     @Header("Authorization") String accessToken,
   );
 }

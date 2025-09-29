@@ -17,6 +17,21 @@ import 'package:share_blog/features/blog/domain/usecases/create_blog_usecase.dar
 import 'package:share_blog/features/blog/domain/usecases/get_blog_by_slug_usecase.dart';
 import 'package:share_blog/features/blog/domain/usecases/get_list_blog_usecase.dart';
 import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
+import 'package:share_blog/features/comment/data/datasources/comment_data_source.dart';
+import 'package:share_blog/features/comment/data/datasources/remote/comment_api_data_source.dart';
+import 'package:share_blog/features/comment/data/repositories/comment_repository_impl.dart';
+import 'package:share_blog/features/comment/domain/repositories/comment_repository.dart';
+import 'package:share_blog/features/comment/domain/usecases/create_comment_usecase.dart';
+import 'package:share_blog/features/comment/domain/usecases/delete_comment_usecase.dart';
+import 'package:share_blog/features/comment/domain/usecases/get_list_comments_usecase.dart';
+import 'package:share_blog/features/comment/presentation/bloc/comment_bloc.dart';
+import 'package:share_blog/features/like/data/repositories/like_repository_impl.dart';
+import 'package:share_blog/features/like/data/sources/like_data_source.dart';
+import 'package:share_blog/features/like/data/sources/remote/like_api_data_source.dart';
+import 'package:share_blog/features/like/domain/repositories/like_repository.dart';
+import 'package:share_blog/features/like/domain/usecases/like_blog_usecase.dart';
+import 'package:share_blog/features/like/domain/usecases/unlike_blog_usecase.dart';
+import 'package:share_blog/features/like/presentation/bloc/like_bloc.dart';
 import 'package:share_blog/features/user/data/data_sources/remote/user_api_data_source.dart';
 import 'package:share_blog/features/user/data/data_sources/user_data_source.dart';
 import 'package:share_blog/features/user/data/repositories/user_repository_impl.dart';
@@ -97,5 +112,51 @@ Future<void> initializeDependencies() async {
   );
   serviceLocator.registerLazySingleton(
     () => UserBloc(getCurrentUserUsecase: serviceLocator()),
+  );
+
+  // Comment
+  serviceLocator.registerFactory<CommentDataSource>(
+    () => CommentApiDataSource(serviceLocator()),
+  );
+  serviceLocator.registerFactory<CommentRepository>(
+    () => CommentRepositoryImpl(commentDataSource: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => CreateCommentUsecase(commentRepository: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => GetListCommentsUsecase(commentRepository: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => DeleteCommentUsecase(commentRepository: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => CommentBloc(
+      commentUsecase: serviceLocator(),
+      getListCommentsUsecase: serviceLocator(),
+      deleteCommentUsecase: serviceLocator(),
+    ),
+  );
+
+  // Like
+  serviceLocator.registerFactory<LikeDataSource>(
+    () => LikeApiDataSource(serviceLocator()),
+  );
+  serviceLocator.registerFactory<LikeRepository>(
+    () => LikeRepositoryImpl(likeDataSource: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => LikeBlogUsecase(likeRepository: serviceLocator()),
+  );
+  serviceLocator.registerFactory(
+    () => UnlikeBlogUsecase(likeRepository: serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton(
+    () => LikeBloc(
+      likeBlogUsecase: serviceLocator(),
+      unlikeBlogUsecase: serviceLocator(),
+    ),
   );
 }

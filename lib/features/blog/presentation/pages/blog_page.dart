@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:share_blog/core/themes/app_pallete.dart';
+import 'package:share_blog/core/themes/theme.dart';
 import 'package:share_blog/features/blog/domain/entities/blog_entity.dart';
 import 'package:share_blog/features/blog/presentation/widgets/blog_action_button.dart';
 import 'package:share_blog/features/blog/presentation/widgets/blog_draggable_scrollable_sheet.dart';
@@ -86,7 +87,10 @@ class _BlogPageState extends State<BlogPage> {
                   ],
                 ),
                 SizedBox(height: 20),
-                MarkdownBody(data: widget.blog.content),
+                MarkdownBody(
+                  data: widget.blog.content,
+                  styleSheet: MarkdownThemes.darkTheme,
+                ),
                 SizedBox(height: 200), // content dài để thử scroll
               ],
             ),
@@ -109,14 +113,17 @@ class _BlogPageState extends State<BlogPage> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: Text(
-                            "User name",
+                            widget.blog.userName ?? 'NULL',
                             style: TextStyle(fontSize: 22),
                           ),
                         ),
                         CircleAvatar(
                           backgroundColor: AppPallete.gradient3,
                           maxRadius: 25,
-                          child: Text("G", style: TextStyle(fontSize: 25)),
+                          child: Text(
+                            (widget.blog.userName ?? 'NULL')[0].toUpperCase(),
+                            style: TextStyle(fontSize: 25),
+                          ),
                         ),
                       ],
                     ),

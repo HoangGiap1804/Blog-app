@@ -58,7 +58,7 @@ class BlogModel {
       width: (bannerModel != null) ? bannerModel.width : 0,
       height: (bannerModel != null) ? bannerModel.height : 0,
       idAuth: (authorModel != null) ? authorModel.authorId : "",
-      userName: (authorModel != null) ? authorModel.authorId : "",
+      userName: (authorModel != null) ? authorModel.username : "",
       viewsCount: viewsCount,
       likesCount: likesCount,
       commentCount: commentCount,

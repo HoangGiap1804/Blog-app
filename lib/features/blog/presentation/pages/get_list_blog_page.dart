@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/route_manager.dart';
-import 'package:share_blog/core/routes/app_pages.dart';
-import 'package:share_blog/core/widgets/app_dialog.dart';
 import 'package:share_blog/features/blog/domain/entities/blog_entity.dart';
 import 'package:share_blog/features/blog/domain/usecases/get_list_blog_usecase.dart';
 import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
-import 'package:share_blog/features/blog/presentation/pages/blog_page.dart';
-import 'package:share_blog/features/blog/presentation/widgets/custom_card.dart';
+import 'package:share_blog/features/blog/presentation/widgets/grid_blog.dart';
 import 'package:share_blog/services/token/token_storage.dart';
-import 'package:vertical_card_pager/vertical_card_pager.dart';
 
 class GetListBlogPage extends StatefulWidget {
   const GetListBlogPage({super.key});
@@ -23,81 +18,76 @@ class _GetListBlogPageState extends State<GetListBlogPage>
   List<String> titles = [];
   List<Widget> images = [];
   List<BlogEntity> blogs = [];
+  final _scrollController = ScrollController();
+  bool isLoadingMore = false;
+  bool firstLoading = true;
+  int offset = 0;
+  final int limit = 8;
+
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent) {
+        // kéo gần cuối
+        loadMoreBlogs();
+      }
+    });
+
+    loadToken();
+  }
+
+  void loadToken() async {
+    token = await TokenStorage.getAccessToken();
+    context.read<BlogBloc>().add(
+      GetListBlogEvent(
+        userGetListBlogPramas: UserGetListBlogPramas(
+          limit: limit,
+          offset: offset,
+          accessToken: token!, // thay bằng token
+        ),
+      ),
+    );
+  }
+
+  void loadMoreBlogs() {
+    offset += limit;
+    context.read<BlogBloc>().add(
+      GetListBlogEvent(
+        userGetListBlogPramas: UserGetListBlogPramas(
+          limit: limit,
+          offset: offset,
+          accessToken: token!, // thay bằng token
+        ),
+      ),
+    );
+    print("Load more blog");
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return FutureBuilder(
-      future: TokenStorage.getAccessToken(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // đang loading
-        } else if (snapshot.hasError) {
-          return Text("Lỗi: ${snapshot.error}"); // có lỗi
-        } else if (snapshot.hasData) {
-          if (snapshot.data == null) {
-            return Text("Token null");
-          }
-          context.read<BlogBloc>().add(
-            GetListBlogEvent(
-              userGetListBlogPramas: UserGetListBlogPramas(
-                limit: 10,
-                offset: 0,
-                accessToken: snapshot.data!,
-              ),
-            ),
-          );
-
-          return BlocBuilder<BlogBloc, BlogState>(
-            builder: (context, state) {
-              if (state is BlogLoading) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is GetListBlogSuccess) {
-                for (BlogEntity blog in state.listBlogEntity) {
-                  titles.add('');
-                  images.add(
-                    CustomCard(title: blog.title, url: blog.bannerUrl ?? ""),
-                  );
-                  blogs.add(blog);
-                }
-
-                return Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: SizedBox(
-                        child: VerticalCardPager(
-                          titles: titles, // required
-                          images: images, // required
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ), // optional
-                          onPageChanged: (page) {
-                            // optional
-                          },
-                          onSelectedItem: (index) {
-                            Get.toNamed(Routes.blog, arguments: blogs[index]);
-                          },
-                          initialPage: 0, // optional
-                          align: ALIGN.RIGHT, // optional
-                          physics: ClampingScrollPhysics(), // optional
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              } else if (state is GetListBlogFailure) {
-                //setState(() => isLoading = false);
-                AppDialog.showError(context, desc: state.message);
-                return Text("Blog null");
-              } else {
-                return Text("Blog null");
-              }
-            },
-          );
-        } else {
-          return Text("Token null");
+    return BlocListener<BlogBloc, BlogState>(
+      listener: (context, state) {
+        if (state is GetListBlogSuccess) {
+          setState(() {
+            blogs.addAll(state.listBlogEntity);
+          });
         }
       },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GridBlog(listBlogs: blogs, scrollController: _scrollController),
+      ),
     );
   }
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'blog_api_data_source.dart';
+part of 'comment_api_data_source.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'blog_api_data_source.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _BlogApiDataSource implements BlogApiDataSource {
-  _BlogApiDataSource(
+class _CommentApiDataSource implements CommentApiDataSource {
+  _CommentApiDataSource(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
@@ -24,46 +24,25 @@ class _BlogApiDataSource implements BlogApiDataSource {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BlogResponse> createBlog(
-    String title,
-    String content,
-    String status,
-    File bannerImage,
+  Future<CommentResponse> createComment(
+    String blogId,
     String accessToken,
+    Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': accessToken};
     _headers.removeWhere((k, v) => v == null);
-    final _data = FormData();
-    _data.fields.add(MapEntry(
-      'title',
-      title,
-    ));
-    _data.fields.add(MapEntry(
-      'content',
-      content,
-    ));
-    _data.fields.add(MapEntry(
-      'status',
-      status,
-    ));
-    _data.files.add(MapEntry(
-      'banner_image',
-      MultipartFile.fromFileSync(
-        bannerImage.path,
-        filename: bannerImage.path.split(Platform.pathSeparator).last,
-      ),
-    ));
-    final _options = _setStreamType<BlogResponse>(Options(
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<CommentResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
-      contentType: 'multipart/form-data',
     )
         .compose(
           _dio.options,
-          '/blogs',
+          '/comments/blog/${blogId}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -73,9 +52,9 @@ class _BlogApiDataSource implements BlogApiDataSource {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BlogResponse _value;
+    late CommentResponse _value;
     try {
-      _value = BlogResponse.fromJson(_result.data!);
+      _value = CommentResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -84,8 +63,8 @@ class _BlogApiDataSource implements BlogApiDataSource {
   }
 
   @override
-  Future<BlogResponse> getBlogBySlug(
-    String slug,
+  Future<ListCommentResponse> getListCommentOfBlog(
+    String blogId,
     String accessToken,
   ) async {
     final _extra = <String, dynamic>{};
@@ -93,14 +72,14 @@ class _BlogApiDataSource implements BlogApiDataSource {
     final _headers = <String, dynamic>{r'Authorization': accessToken};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BlogResponse>(Options(
+    final _options = _setStreamType<ListCommentResponse>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/blogs/slug/${slug}',
+          '/comments/blog/${blogId}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -110,9 +89,9 @@ class _BlogApiDataSource implements BlogApiDataSource {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BlogResponse _value;
+    late ListCommentResponse _value;
     try {
-      _value = BlogResponse.fromJson(_result.data!);
+      _value = ListCommentResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -121,27 +100,23 @@ class _BlogApiDataSource implements BlogApiDataSource {
   }
 
   @override
-  Future<ListBlogResponse> getListBlog(
-    int limit,
-    int offset,
+  Future<HttpResponse<void>> deleteComment(
+    String commentId,
     String accessToken,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'limit': limit,
-      r'offset': offset,
-    };
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': accessToken};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ListBlogResponse>(Options(
-      method: 'GET',
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'DELETE',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/blogs/',
+          '/comments/${commentId}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -150,15 +125,9 @@ class _BlogApiDataSource implements BlogApiDataSource {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ListBlogResponse _value;
-    try {
-      _value = ListBlogResponse.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
+    final _result = await _dio.fetch<void>(_options);
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

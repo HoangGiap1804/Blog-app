@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:share_blog/core/themes/app_pallete.dart';
+import 'package:share_blog/core/themes/theme.dart';
 import 'package:share_blog/core/widgets/app_dialog.dart';
 import 'package:share_blog/features/blog/domain/entities/blog_entity.dart';
 import 'package:share_blog/features/blog/domain/usecases/get_blog_by_slug_usecase.dart';
@@ -136,7 +137,10 @@ class _GetBlogBySlugState extends State<GetBlogBySlug>
               ],
             ),
             SizedBox(height: 20),
-            MarkdownBody(data: blog.content),
+            MarkdownBody(
+              data: blog.content,
+              styleSheet: MarkdownThemes.darkTheme,
+            ),
             SizedBox(height: 200), // content dài để thử scroll
           ],
         ),
@@ -158,7 +162,10 @@ class _GetBlogBySlugState extends State<GetBlogBySlug>
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text("User name", style: TextStyle(fontSize: 22)),
+                      child: Text(
+                        blog.userName ?? "",
+                        style: TextStyle(fontSize: 22),
+                      ),
                     ),
                     CircleAvatar(
                       backgroundColor: AppPallete.gradient3,

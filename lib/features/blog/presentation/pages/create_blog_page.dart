@@ -6,6 +6,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:share_blog/core/themes/app_pallete.dart';
+import 'package:share_blog/core/themes/theme.dart';
 import 'package:share_blog/features/blog/domain/usecases/create_blog_usecase.dart';
 import 'package:share_blog/features/blog/presentation/bloc/blog_bloc.dart';
 import 'package:share_blog/features/blog/presentation/widgets/animation_change_widget.dart';
@@ -179,6 +180,7 @@ Code block:
               firstWidget: MarkdownBody(
                 key: ValueKey("markdown"),
                 data: contentController.text,
+                styleSheet: MarkdownThemes.darkTheme,
               ),
               secondWidget: TextField(
                 key: ValueKey("textfield"),
@@ -208,11 +210,6 @@ Code block:
               overlayOpacity: 0.4,
               direction: SpeedDialDirection.up, // bung nút lên trên
               children: [
-                SpeedDialChild(
-                  child: Icon(Icons.add),
-                  label: 'Thêm mới',
-                  onTap: () => print("Nhấn Thêm"),
-                ),
                 SpeedDialChild(
                   child: Icon(Icons.subdirectory_arrow_left),
                   label: 'Submit',
